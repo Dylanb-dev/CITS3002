@@ -5,7 +5,7 @@ run bank with
 from bin/Bank
 
 run collectors in a seperate cmd with 
-"java -cp ../ -Djavax.net.ssl.trustStore=publicBanjks Collectors.Collectors"
+"java -cp ../ -Djavax.net.ssl.trustStore=publicBankjks Collectors.Collectors"
 from bin/Collectors
 
 Source taken from http://www.herongyang.com/JDK/
