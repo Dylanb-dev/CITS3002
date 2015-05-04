@@ -1,11 +1,15 @@
 # CITS3002
 
 run bank with 
+
 "java -cp ../ Bank.Bank"
+
 from bin/Bank
 
 run collectors in a seperate cmd with 
-"java -cp ../ -Djavax.net.ssl.trustStore=publicBankjks Collectors.Collectors"
+
+"java -cp ../ -Djavax.net.ssl.trustStore=publicBank.jks Collectors.Collectors"
+
 from bin/Collectors
 
 Source taken from http://www.herongyang.com/JDK/
