@@ -16,7 +16,7 @@ public class CipherExample {
 
 	public static void main(String[] args) {
 		try {
-			String key = "fridge"; // needs to be at least 8 characters for DES
+			String key = "fridge123"; // needs to be at least 8 characters for DES
 
 			FileInputStream fis = new FileInputStream("bin/Collectors/original.txt");
 			FileOutputStream fos = new FileOutputStream("bin/Collectors/encrypted.txt");
