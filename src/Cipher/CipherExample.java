@@ -1,9 +1,10 @@
-package Collectors;
+package Cipher;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -21,7 +22,12 @@ public class CipherExample {
 			FileInputStream fis = new FileInputStream("bin/Collectors/original.txt");
 			FileOutputStream fos = new FileOutputStream("bin/Collectors/encrypted.txt");
 			encrypt(key, fis, fos);
-
+			PrintWriter writer = new PrintWriter("bin/Collectors/encrypted.txt", "UTF-8");
+			writer.println("The first line");
+			writer.println("The second line");
+			writer.close();
+			
+			
 			FileInputStream fis2 = new FileInputStream("bin/Collectors/encrypted.txt");
 			FileOutputStream fos2 = new FileOutputStream("bin/Collectors/decrypted.txt");
 			decrypt(key, fis2, fos2);
