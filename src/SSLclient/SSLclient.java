@@ -15,7 +15,7 @@ public class SSLclient {
          SSLSocket c =
            (SSLSocket) f.createSocket("localhost", 8888);
          printSocketInfo(c);
-         c.startHandshake();
+         c.startHandshake();	
          BufferedWriter w = new BufferedWriter(
             new OutputStreamWriter(c.getOutputStream()));
          BufferedReader r = new BufferedReader(

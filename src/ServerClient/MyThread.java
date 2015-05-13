@@ -1,18 +1,19 @@
 package ServerClient;
 
 import java.io.*;
-import java.net.*;
 
-
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLSocket;
 
 public class MyThread extends Thread {
 	
-	private Socket socket = null;
-	private Server server = null;
+	private SSLSocket socket = null;
+	private SSLServerSocket server = null;
 	private int ID = -1;
-	private BufferedReader streamIn = null;
+	private BufferedReader r = null;
+	private BufferedWriter w = null;
 	
-	public MyThread(Server _server, Socket _socket)
+	public MyThread(SSLServerSocket _server, SSLSocket _socket)
 	{
 		server = _server; socket = _socket; ID = socket.getPort();
 	}
@@ -23,21 +24,36 @@ public class MyThread extends Thread {
 		{
 			try
 			{
-				String str = streamIn.readLine();
-				System.out.println(str);
+				String m = "Connect to thread #" + ID;
+				w.write(m,0,m.length());
+				w.newLine();
+				w.flush();
+				while ((m=r.readLine())!= null) {
+					if (m.equals(".")) break;
+					w.write(m,0,m.length());
+					w.newLine();
+					w.flush();
+				}
+				close();
+				
+			} catch (Exception e) {
+				System.err.println(e.toString());
 			}
-			catch (IOException ioe) {}
 		}
 	}
 	public void open() throws IOException
 	{
-		streamIn = new BufferedReader(
-		        new InputStreamReader(socket.getInputStream()));
+		w = new BufferedWriter(new OutputStreamWriter(
+				socket.getOutputStream()));
+		r = new BufferedReader(new InputStreamReader(
+				socket.getInputStream()));
+
 	}
 	public void close() throws IOException
 	{
 		if(socket != null) socket.close();
-		if(streamIn != null) streamIn.close();
+		if(r != null) r.close();
+		if(w != null) w.close();
 	}
 	
 }
