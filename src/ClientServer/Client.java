@@ -62,7 +62,6 @@ public class Client implements Runnable {
 	{
 		if(msg.equals("."))
 		{
-			System.out.println("Good bye. Press RETURN to exit ...");
 			stop();
 		}
 		else
@@ -83,6 +82,7 @@ public class Client implements Runnable {
 
 	public void stop()
 	{
+		System.out.println("Disconnecting from server ...");
 		if(thread != null)
 		{
 			thread.interrupt();
@@ -100,6 +100,7 @@ public class Client implements Runnable {
 		}
 		client.close();
 		client.interrupt();
+		System.out.println("Disconnect successful.");
 	}
 
 	public static void main(String args[])

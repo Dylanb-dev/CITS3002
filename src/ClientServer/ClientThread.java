@@ -51,6 +51,7 @@ public class ClientThread extends Thread
 				msg = in.readLine();
 				if(msg.equals("."))
 				{
+					client.handle(msg);
 					break;
 				}
 				client.handle(msg);

@@ -91,7 +91,7 @@ public class Server implements Runnable {
 		if( pos >= 0 )
 		{
 			MyThread toTerminate = clients.get(pos);
-			System.out.println("Removing client thread " + ID + "at " + pos);
+			System.out.println("Removing client thread " + ID + " at " + pos);
 			clients.remove(pos);
 			try
 			{
