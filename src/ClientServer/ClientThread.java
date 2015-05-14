@@ -2,6 +2,7 @@ package ClientServer;
 
 import java.io.*;
 import java.net.*;
+
 import javax.net.ssl.*;
 
 public class ClientThread extends Thread
@@ -51,6 +52,7 @@ public class ClientThread extends Thread
 				msg = in.readLine();
 				if(msg.equals("."))
 				{
+					client.handle(msg);
 					break;
 				}
 				client.handle(msg);

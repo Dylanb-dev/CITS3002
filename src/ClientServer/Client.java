@@ -19,9 +19,7 @@ public class Client implements Runnable {
 
 	public Client(String serverName, int serverPort)
 	{
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(System.in));
-		PrintStream out = System.out;
+
 		SSLSocketFactory f = 
 				(SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
@@ -36,6 +34,7 @@ public class Client implements Runnable {
 	}
 	public void run()
 	{
+		
 		while (thread != null)
 		{
 			try
@@ -54,15 +53,15 @@ public class Client implements Runnable {
 	protected void finalize( ) throws Throwable
 	{
 		w.println(".");
-		
 		super.finalize();
 	}
 
 	public void handle(String msg)
 	{
+
 		if(msg.equals("."))
 		{
-			System.out.println("Good bye. Press RETURN to exit ...");
+			System.out.println("Attempting to close thread");
 			stop();
 		}
 		else
@@ -83,6 +82,7 @@ public class Client implements Runnable {
 
 	public void stop()
 	{
+
 		if(thread != null)
 		{
 			thread.interrupt();
@@ -98,14 +98,16 @@ public class Client implements Runnable {
 		{
 			System.out.println("Error closing ...");
 		}
+
 		client.close();
 		client.interrupt();
+		System.out.println("Thread has closed. Type reconnect to reconnect");
+
 	}
 
 	public static void main(String args[])
 	{
-		Client client = null;
-		client = new Client("127.0.0.1", 1244);
+		Client client = new Client("127.0.0.1", 1244);
 	}
 	//Print out for socket
 
