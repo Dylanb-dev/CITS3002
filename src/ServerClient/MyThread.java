@@ -29,7 +29,7 @@ public class MyThread extends Thread {
 		catch (IOException ioe)
 		{
 			System.out.println(ID + " ERROR sending: " + ioe.getMessage());
-			server.remove(ID);
+			server.handle(ID, ".");
 			interrupt();
 		}
 	}
@@ -43,14 +43,13 @@ public class MyThread extends Thread {
 		System.out.println("Server Thread " + ID + " running.");
 		try
 		{
-			String m = "Connect to thread #" + ID;
+			String m = "Connected!";
 			server.handle(ID, m);
 			while ((m=r.readLine())!= null) {
 				server.handle(ID, m);
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			server.remove(ID);
 		}
 	}
 	public void open() throws IOException

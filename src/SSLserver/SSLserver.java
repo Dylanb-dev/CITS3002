@@ -6,12 +6,9 @@ import java.security.*;
 import javax.net.ssl.*;
 
 import java.util.HashMap;
-import eCents.eCents;
 
 
 public class SSLserver {
-
-	private HashMap<String, eCents> records = new HashMap<String, eCents>();
 
 	public static void main(String[] args) {
 
@@ -62,6 +59,20 @@ public class SSLserver {
 			System.err.println(e.toString());
 		}
 	}
+
+	private static void printServerSocketInfo(SSLServerSocket s) {
+		System.out.println("Server socket class: "+s.getClass());
+		System.out.println("   Socker address = "
+				+s.getInetAddress().toString());
+		System.out.println("   Socker port = "
+				+s.getLocalPort());
+		System.out.println("   Need client authentication = "
+				+s.getNeedClientAuth());
+		System.out.println("   Want client authentication = "
+				+s.getWantClientAuth());
+		System.out.println("   Use client mode = "
+				+s.getUseClientMode());
+	}
 	private static void printSocketInfo(SSLSocket s) {
 		System.out.println("Socket class: "+s.getClass());
 		System.out.println("   Remote address = "
@@ -78,18 +89,6 @@ public class SSLserver {
 		System.out.println("   Cipher suite = "+ss.getCipherSuite());
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
-	private static void printServerSocketInfo(SSLServerSocket s) {
-		System.out.println("Server socket class: "+s.getClass());
-		System.out.println("   Socker address = "
-				+s.getInetAddress().toString());
-		System.out.println("   Socker port = "
-				+s.getLocalPort());
-		System.out.println("   Need client authentication = "
-				+s.getNeedClientAuth());
-		System.out.println("   Want client authentication = "
-				+s.getWantClientAuth());
-		System.out.println("   Use client mode = "
-				+s.getUseClientMode());
-	} 
+	private HashMap<String, eCents> records = new HashMap<String, eCents>(); 
 }
 

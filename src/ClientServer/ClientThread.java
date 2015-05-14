@@ -1,15 +1,13 @@
 package ClientServer;
 
 import java.io.*;
-import java.net.*;
-
 import javax.net.ssl.*;
 
 public class ClientThread extends Thread
 {
-	private SSLSocket socket = null;
 	private Client client = null;
 	private BufferedReader in = null;
+	private SSLSocket socket = null;
 	
 	public ClientThread(Client _client, SSLSocket _socket)
 	{
@@ -17,6 +15,17 @@ public class ClientThread extends Thread
 		socket = _socket;
 		open();
 		start();
+	}
+	public void close()
+	{
+		try
+		{
+			if(in != null) in.close();
+		}
+		catch (IOException ioe)
+		{
+			System.out.println("Error closing input stream: " + ioe);
+		}
 	}
 	public void open()
 	{
@@ -31,17 +40,7 @@ public class ClientThread extends Thread
 			client.stop();
 		}
 	}
-	public void close()
-	{
-		try
-		{
-			if(in != null) in.close();
-		}
-		catch (IOException ioe)
-		{
-			System.out.println("Error closing input stream: " + ioe);
-		}
-	}
+	@Override
 	public void run()
 	{
 		String msg = "";
@@ -59,7 +58,7 @@ public class ClientThread extends Thread
 			}
 			catch (IOException ioe)
 			{
-				System.out.println("Listening error: " + ioe.getMessage());
+				System.out.println("Connection Error. Press <ENTER> to reconnect.");
 				client.stop();
 				break;
 			}

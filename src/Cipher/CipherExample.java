@@ -15,33 +15,23 @@ import javax.crypto.spec.DESKeySpec;
 
 public class CipherExample {
 
-	public static void main(String[] args) {
-		try {
-			String key = "fridge123"; // needs to be at least 8 characters for DES
+	public static void decrypt(String key, InputStream is, OutputStream os) throws Throwable {
+		encryptOrDecrypt(key, Cipher.DECRYPT_MODE, is, os);
+	}
 
-			FileInputStream fis = new FileInputStream("bin/Collectors/original.txt");
-			FileOutputStream fos = new FileOutputStream("bin/Collectors/encrypted.txt");
-			encrypt(key, fis, fos);
-			PrintWriter writer = new PrintWriter("bin/Collectors/encrypted.txt", "UTF-8");
-			writer.println("The first line");
-			writer.println("The second line");
-			writer.close();
-			
-			
-			FileInputStream fis2 = new FileInputStream("bin/Collectors/encrypted.txt");
-			FileOutputStream fos2 = new FileOutputStream("bin/Collectors/decrypted.txt");
-			decrypt(key, fis2, fos2);
-		} catch (Throwable e) {
-			e.printStackTrace();
+	public static void doCopy(InputStream is, OutputStream os) throws IOException {
+		byte[] bytes = new byte[64];
+		int numBytes;
+		while ((numBytes = is.read(bytes)) != -1) {
+			os.write(bytes, 0, numBytes);
 		}
+		os.flush();
+		os.close();
+		is.close();
 	}
 
 	public static void encrypt(String key, InputStream is, OutputStream os) throws Throwable {
 		encryptOrDecrypt(key, Cipher.ENCRYPT_MODE, is, os);
-	}
-
-	public static void decrypt(String key, InputStream is, OutputStream os) throws Throwable {
-		encryptOrDecrypt(key, Cipher.DECRYPT_MODE, is, os);
 	}
 
 	public static void encryptOrDecrypt(String key, int mode, InputStream is, OutputStream os) throws Throwable {
@@ -62,15 +52,25 @@ public class CipherExample {
 		}
 	}
 
-	public static void doCopy(InputStream is, OutputStream os) throws IOException {
-		byte[] bytes = new byte[64];
-		int numBytes;
-		while ((numBytes = is.read(bytes)) != -1) {
-			os.write(bytes, 0, numBytes);
+	public static void main(String[] args) {
+		try {
+			String key = "fridge123"; // needs to be at least 8 characters for DES
+
+			FileInputStream fis = new FileInputStream("bin/Collectors/original.txt");
+			FileOutputStream fos = new FileOutputStream("bin/Collectors/encrypted.txt");
+			encrypt(key, fis, fos);
+			PrintWriter writer = new PrintWriter("bin/Collectors/encrypted.txt", "UTF-8");
+			writer.println("The first line");
+			writer.println("The second line");
+			writer.close();
+			
+			
+			FileInputStream fis2 = new FileInputStream("bin/Collectors/encrypted.txt");
+			FileOutputStream fos2 = new FileOutputStream("bin/Collectors/decrypted.txt");
+			decrypt(key, fis2, fos2);
+		} catch (Throwable e) {
+			e.printStackTrace();
 		}
-		os.flush();
-		os.close();
-		is.close();
 	}
 
 }

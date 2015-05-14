@@ -72,16 +72,20 @@ public class Server implements Runnable {
 	}
 	public synchronized void handle(int ID, String input)
 	{
+		int pos = findClient(ID);
 		if(input.equals("."))
 		{
-			clients.get(findClient(ID)).send(".");
+			clients.get(pos).send(".");
 			remove(ID);
 		}
 		else
 		{
 			for(int i = 0; i < clients.size(); i++)
 			{
-				clients.get(i).send(ID + ": " + input);
+				if(i != pos)
+				{
+					clients.get(i).send(ID + ": " + input);
+				}
 			}
 		}
 	}
@@ -103,6 +107,7 @@ public class Server implements Runnable {
 			}
 			toTerminate.interrupt();
 		}
+		handle(0, ID + " disconnected ...");
 	}
 	
 	public void addThread(SSLSocket socket)
