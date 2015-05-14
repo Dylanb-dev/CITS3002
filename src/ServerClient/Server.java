@@ -2,21 +2,16 @@ package ServerClient;
 
 import java.io.*;
 import java.net.*;
-import java.security.KeyStore;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
+import java.security.*;
+import java.util.*;
+import javax.net.ssl.*;
 
 
 public class Server implements Runnable {
 	
 	private SSLServerSocket server = null;
 	private Thread thread = null;
-	private MyThread client = null;
+	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
 	
 	public Server(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
@@ -66,13 +61,57 @@ public class Server implements Runnable {
 		}
 	}
 	
+	private int findClient(int ID)
+	{
+		for(int i = 0; i < clients.size(); i++)
+		{
+			if(clients.get(i).getID() == ID)
+				return i;
+		}
+		return -1;
+	}
+	public synchronized void handle(int ID, String input)
+	{
+		if(input.equals("."))
+		{
+			clients.get(findClient(ID)).send("disconnecting...");
+			remove(ID);
+		}
+		else
+		{
+			for(int i = 0; i < clients.size(); i++)
+			{
+				clients.get(i).send(ID + ": " + input);
+			}
+		}
+	}
+	public synchronized void remove(int ID)
+	{
+		int pos = findClient(ID);
+		if( pos >= 0 )
+		{
+			MyThread toTerminate = clients.get(pos);
+			System.out.println("Removing client thread " + ID + "at " + pos);
+			clients.remove(pos);
+			try
+			{
+				toTerminate.close();
+			}
+			catch (IOException ioe)
+			{
+				System.out.println("Error closing thread " + ioe);
+			}
+			toTerminate.interrupt();
+		}
+	}
+	
 	public void addThread(SSLSocket socket)
 	{
 		System.out.println("Client accepted: " + socket.getInetAddress());
-		client = new MyThread(server, socket);
+		clients.add(new MyThread(this, socket));
 		try {
-			client.open();
-			client.start();
+			clients.get(clients.size()-1).open();
+			clients.get(clients.size()-1).start();
 		} catch (IOException ioe) {
 			System.out.println("Error opening thread: " + ioe);
 		}

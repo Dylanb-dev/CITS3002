@@ -8,56 +8,86 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 
-public class Client {
+public class Client implements Runnable {
 
 	private SSLSocket socket = null;
-	private BufferedWriter w = null;
+	private PrintWriter w = null;
 	private BufferedReader r = null;
 	private BufferedReader in = null;
+	private ClientThread client = null;
+	private Thread thread = null;
 
 	public Client(String serverName, int serverPort)
 	{
-	      BufferedReader in = new BufferedReader(
-	    	      new InputStreamReader(System.in));
-	    	      PrintStream out = System.out;
-	    	      SSLSocketFactory f = 
-	    	         (SSLSocketFactory) SSLSocketFactory.getDefault();
-	    	      try {
-	    	         SSLSocket c =
-	    	           (SSLSocket) f.createSocket(serverName, serverPort);
-	    	         printSocketInfo(c);
-	    	         c.startHandshake();	
-	    	         BufferedWriter w = new BufferedWriter(
-	    	            new OutputStreamWriter(c.getOutputStream()));
-	    	         BufferedReader r = new BufferedReader(
-	    	            new InputStreamReader(c.getInputStream()));
-	    	         String m = null;
-	    	         while ((m=r.readLine())!= null) {
-	    	            out.println(m);
-	    	            m = in.readLine();
-	    	            w.write(m,0,m.length());
-	    	            w.newLine();
-	    	            w.flush();
-	    	         }
-	    	         w.close();
-	    	         r.close();
-	    	         c.close();
-	    	      } catch (IOException e) {
-	    	         System.err.println(e.toString());
-	    	      }
-
+		BufferedReader in = new BufferedReader(
+				new InputStreamReader(System.in));
+		PrintStream out = System.out;
+		SSLSocketFactory f = 
+				(SSLSocketFactory) SSLSocketFactory.getDefault();
+		try {
+			socket = (SSLSocket) f.createSocket(serverName, serverPort);
+			printSocketInfo(socket);
+			socket.startHandshake();	
+			start();
+		} catch (IOException e) {
+			System.err.println(e.toString());
+		}
+	     
+	}
+	public void run()
+	{
+		while (thread != null)
+		{
+			try
+			{
+				w.println(in.readLine());
+				w.flush();
+			}
+			catch (IOException ioe)
+			{
+				System.out.println("Good bye. Press RETURN to exit ...");
+				stop();
+			}
+		}
+	}
+	
+	protected void finalize( ) throws Throwable
+	{
+		w.println(".");
+		
+		super.finalize();
 	}
 
+	public void handle(String msg)
+	{
+		if(msg.equals("."))
+		{
+			System.out.println("Good bye. Press RETURN to exit ...");
+			stop();
+		}
+		else
+			System.out.println(msg);
+	}
 	public void start() throws IOException
 	{
-		r = new BufferedReader(
-				new InputStreamReader(socket.getInputStream()));
-		w = new BufferedWriter(
-				new OutputStreamWriter(socket.getOutputStream()));
+		in = new BufferedReader(
+				new InputStreamReader(System.in));
+		w = new PrintWriter(socket.getOutputStream());
+		if(thread == null)
+		{
+			client = new ClientThread(this,socket);
+			thread = new Thread(this);
+			thread.start();
+		}
 	}
 
 	public void stop()
 	{
+		if(thread != null)
+		{
+			thread.interrupt();
+			thread = null;
+		}
 		try 
 		{		
 			if(r != null) r.close();
@@ -68,11 +98,14 @@ public class Client {
 		{
 			System.out.println("Error closing ...");
 		}
+		client.close();
+		client.interrupt();
 	}
 
 	public static void main(String args[])
 	{
-		new Client("127.0.0.1", 1244);
+		Client client = null;
+		client = new Client("127.0.0.1", 1244);
 	}
 	//Print out for socket
 

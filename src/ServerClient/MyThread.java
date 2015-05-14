@@ -8,37 +8,49 @@ import javax.net.ssl.SSLSocket;
 public class MyThread extends Thread {
 	
 	private SSLSocket socket = null;
-	private SSLServerSocket server = null;
+	private Server server = null;
 	private int ID = -1;
 	private BufferedReader r = null;
 	private BufferedWriter w = null;
+	private boolean running = true;
 	
-	public MyThread(SSLServerSocket _server, SSLSocket _socket)
+	public MyThread(Server _server, SSLSocket _socket)
 	{
 		server = _server; socket = _socket; ID = socket.getPort();
 	}
+	public void send(String msg)
+	{
+		try
+		{
+			w.write(msg,0,msg.length());
+			w.newLine();
+			w.flush();
+		}
+		catch (IOException ioe)
+		{
+			System.out.println(ID + " ERROR sending: " + ioe.getMessage());
+			server.remove(ID);
+			interrupt();
+		}
+	}
+	public int getID()
+	{
+		return ID;
+	}
+	
 	public void run()
 	{
 		System.out.println("Server Thread " + ID + " running.");
-		while(true)
+		try
 		{
-			try
-			{
-				String m = "Connect to thread #" + ID;
-				w.write(m,0,m.length());
-				w.newLine();
-				w.flush();
-				while ((m=r.readLine())!= null) {
-					if (m.equals(".")) break;
-					w.write(m,0,m.length());
-					w.newLine();
-					w.flush();
-				}
-				close();
-				
-			} catch (Exception e) {
-				System.err.println(e.toString());
+			String m = "Connect to thread #" + ID;
+			server.handle(ID, m);
+			while ((m=r.readLine())!= null) {
+				server.handle(ID, m);
 			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			server.remove(ID);
 		}
 	}
 	public void open() throws IOException
