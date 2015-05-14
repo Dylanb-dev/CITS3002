@@ -43,16 +43,23 @@ public class ClientThread extends Thread
 	}
 	public void run()
 	{
+		String msg = "";
 		while(true)
 		{
 			try
 			{
-				client.handle(in.readLine());
+				msg = in.readLine();
+				if(msg.equals("."))
+				{
+					break;
+				}
+				client.handle(msg);
 			}
 			catch (IOException ioe)
 			{
 				System.out.println("Listening error: " + ioe.getMessage());
 				client.stop();
+				break;
 			}
 		}
 	}

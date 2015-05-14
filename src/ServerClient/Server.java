@@ -74,7 +74,7 @@ public class Server implements Runnable {
 	{
 		if(input.equals("."))
 		{
-			clients.get(findClient(ID)).send("disconnecting...");
+			clients.get(findClient(ID)).send(".");
 			remove(ID);
 		}
 		else
