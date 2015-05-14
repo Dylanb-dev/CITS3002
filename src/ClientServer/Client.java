@@ -43,7 +43,7 @@ public class Client implements Runnable {
 			}
 			catch (IOException ioe)
 			{
-				System.out.println("Good bye. Press RETURN to exit ...");
+				System.out.println("Console Error: " + ioe.getMessage());
 				stop();
 			}
 		}
@@ -60,7 +60,6 @@ public class Client implements Runnable {
 
 		if(msg.equals("."))
 		{
-			System.out.println("Attempting to close thread");
 			stop();
 		}
 		else
