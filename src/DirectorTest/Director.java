@@ -22,7 +22,7 @@ public class Director implements Runnable {
 			ks.load(new FileInputStream(ksName), ksPass);
 			
 			KeyManagerFactory kmf = 
-					KeyManagerFactory.getInstance("SunX509");
+					KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			
 			kmf.init(ks, ctPass);
 			
