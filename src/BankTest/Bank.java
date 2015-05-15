@@ -157,6 +157,10 @@ public class Bank implements Runnable {
 			try 
 			{
 				str = sysIn.readLine();
+				if(str.equals(""))
+				{
+					str = "2222";
+				}
 				if(str.equals("."))
 				{
 					break;

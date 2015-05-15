@@ -32,6 +32,10 @@ public class Client implements Runnable {
 			try 
 			{
 				str = sysIn.readLine();
+				if(str.equals(""))
+				{
+					str = "127.0.0.1 1111 127.0.0.1 2222";
+				}
 				if(str.equals("."))
 				{
 					break;

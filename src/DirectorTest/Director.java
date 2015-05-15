@@ -155,6 +155,10 @@ public class Director implements Runnable {
 			try 
 			{
 				str = sysIn.readLine();
+				if(str.equals(""))
+				{
+					str = "1111";
+				}
 				if(str.equals("."))
 				{
 					break;
