@@ -50,7 +50,7 @@ public class Client implements Runnable {
 			}
 			catch (Exception e)
 			{
-				System.out.println("Address and port are not in correct format!");
+				System.out.println("One or more addresses or ports are incorrect!");
 			}
 		}
 		System.out.println("Goodbye.");
@@ -86,8 +86,9 @@ public class Client implements Runnable {
 			printSocketInfo(bankSocket);
 			bankSocket.startHandshake();	
 			start();
-		} catch (IOException e) {
-			System.err.println(e.toString());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			stop();
 		}
 	     
 	}
@@ -95,6 +96,7 @@ public class Client implements Runnable {
 	protected void finalize( ) throws Throwable
 	{
 		directorOut.println(".");
+		bankOut.println(".");
 		super.finalize();
 	}
 	
@@ -116,14 +118,21 @@ public class Client implements Runnable {
 			try
 			{
 				String str = in.readLine();
+				if(str.equals("."))
+				{
+					directorOut.println(str);
+					directorOut.flush();
+					bankOut.println(str);
+					bankOut.flush();
+				}
 				if(str.startsWith(".director "))
 				{
-					directorOut.println(str.substring(10, str.length()-1));
+					directorOut.println(str);
 					directorOut.flush();
 				}
 				if(str.startsWith(".bank "))
 				{
-					bankOut.println(str.substring(6, str.length()-1));
+					bankOut.println(str);
 					bankOut.flush();
 				}
 				Thread.sleep(10);
@@ -164,6 +173,8 @@ public class Client implements Runnable {
 		{
 			if(directorOut != null) directorOut.close();
 			if(directorSocket != null) directorSocket.close();
+			if(bankOut != null) bankOut.close();
+			if(bankSocket != null) bankSocket.close();
 		}
 		catch (IOException ioe)
 		{

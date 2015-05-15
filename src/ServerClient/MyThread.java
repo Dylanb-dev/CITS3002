@@ -49,7 +49,8 @@ public class MyThread extends Thread {
 				server.handle(ID, m);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Connection problem: " + e.getMessage());
+			server.remove(ID);
 		}
 	}
 	public void open() throws IOException
