@@ -49,6 +49,7 @@ public class ClientThread extends Thread
 			try
 			{
 				msg = in.readLine();
+
 				if(msg.equals("."))
 				{
 					client.handle(msg);
@@ -56,7 +57,7 @@ public class ClientThread extends Thread
 				}
 				client.handle(msg);
 			}
-			catch (IOException ioe)
+			catch (Exception e)
 			{
 				System.out.println("Connection Error. Press <ENTER> to reconnect.");
 				client.stop();
