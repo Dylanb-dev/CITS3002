@@ -1,4 +1,4 @@
-package BankTest;
+package Bank;
 
 import java.io.*;
 
