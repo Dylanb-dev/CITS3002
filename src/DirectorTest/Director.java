@@ -13,6 +13,7 @@ public class Director implements Runnable {
 	private SSLServerSocket server = null;
 	private Thread thread = null;
 	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
+	private HashMap<Integer, String> map = new HashMap<Integer, String>();
 	
 	public Director(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
@@ -79,6 +80,14 @@ public class Director implements Runnable {
 			clients.get(pos).send(".");
 			remove(ID);
 		}
+		else if(input.startsWith(".director .collector ")){
+			input = input.substring(21, input.length());
+			map.put(ID, input);
+			System.out.println("CollectorID: " +ID +" Type: "+ input);
+		}
+		
+		
+		
 		else if(input.startsWith(".director "))
 		{
 			input = input.substring(10, input.length());

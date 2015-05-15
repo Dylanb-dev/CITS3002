@@ -15,6 +15,7 @@ public class Bank implements Runnable {
 	private SSLServerSocket server = null;
 	private Thread thread = null;
 	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
+	private HashMap<Integer, Integer> loans = new HashMap<Integer, Integer>();
 	
 	public Bank(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
