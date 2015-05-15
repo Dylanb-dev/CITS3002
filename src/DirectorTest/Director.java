@@ -100,9 +100,9 @@ public class Director implements Runnable {
 			input = input.substring(10, input.length());
 			if(input.startsWith(".analysis "))
 			{
-				
+
 				input = input.substring(10, input.length());
-		
+
 				if(map.get(ID).equals("collector"))
 				{
 					//send input from director to analyst
@@ -124,7 +124,7 @@ public class Director implements Runnable {
 				}
 				else
 				{
-					
+
 					//send result from analyst to collector
 					int returnID = Integer.parseInt(input.substring(0, 5));
 					System.out.println("Sending results to " +returnID);
@@ -136,7 +136,7 @@ public class Director implements Runnable {
 					System.out.println("Result from Analyst sent back to " +returnID);
 				}
 			}
-		
+
 			else if(input.startsWith(".test ")) 
 			{
 				for(int i = 0; i < clients.size(); i++)
@@ -149,7 +149,7 @@ public class Director implements Runnable {
 				}
 			}
 		}
-		
+
 		else if(input.startsWith(".bank "))
 		{
 			clients.get(pos).send("This is not a Bank. Please disconnect with '.' and check your connection settings...");

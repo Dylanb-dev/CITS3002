@@ -90,7 +90,7 @@ public class Bank implements Runnable {
 				System.out.println("eCent withdrawl requested from "+ID);
 				String eCent = new BigInteger(130, random).toString(32);
 				loans.put(eCent,ID);
-				clients.get(pos).send(eCent);
+				clients.get(pos).send("eCent " + eCent);
 				System.out.println("eCent sent to "+ID);
 				System.out.println(loans.toString());
 				System.out.println(deposits.toString());

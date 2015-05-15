@@ -1,6 +1,7 @@
 package ClientServer;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -19,8 +20,11 @@ public class Client implements Runnable {
 	private PrintWriter bankOut = null;
 	private int job = 0;
 	private String Title = "";
-	
-	
+	private String DATA = "";
+	private ArrayList<String> eCents = new ArrayList<String>();
+	private AES_Cipher aes = new AES_Cipher();
+
+
 	public static void main(String args[])
 	{
 		int type = 0;
@@ -109,7 +113,7 @@ public class Client implements Runnable {
 		}
 		System.out.println("Goodbye.");
 	}
-	
+
 	//Print out for socket
 	private static void printSocketInfo(SSLSocket s) {
 		System.out.println("Socket class: "+s.getClass());
@@ -127,7 +131,7 @@ public class Client implements Runnable {
 		System.out.println("   Cipher suite = "+ss.getCipherSuite());
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
-	
+
 	public Client(String directorName, int directorPort, String bankName, int bankPort, int jobType, String title)
 	{
 		job = jobType;
@@ -146,7 +150,7 @@ public class Client implements Runnable {
 			System.out.println(e.getMessage());
 			stop();
 		}
-	     
+
 	}
 
 	protected void finalize( ) throws Throwable
@@ -155,30 +159,49 @@ public class Client implements Runnable {
 		bankOut.println(".");
 		super.finalize();
 	}
-	
-	public void handle(String msg)
+
+	public void handle(String msg) throws Exception
 	{
 		if(msg.equals("."))
 		{
 			stop();
 		}
+		if(msg.startsWith("eCent "))
+		{
+			eCents.add(msg.substring(6, msg.length()));
+			System.out.println("eCent added: "+ eCents.toString());
+		}
+		if(msg.startsWith("ID "))
+		{
+			System.out.println(msg);
+			String rec = "";
+			try{
+				rec += AES_Cipher.decrypt(msg.substring(19, msg.length()));
+			}  catch (Exception e) {
+				e.printStackTrace();
+			}
+	
+			System.out.println("data and eCent: " + rec);
+		}
+		
+		
 		else System.out.println(msg);
 	}
 
 	@Override
 	public void run()
 	{
-		
+
 		if(job == 1) {
-			
+
 			System.out.println("Welcome! Collector ");
 			System.out.println("Type '.director .analysis [5 letter datatype] "
 					+ "[data]' to send data to be analysed");
-			
+
 			directorOut.println(".settings .collector");
 		}
 		if(job == 2) {
-			
+
 			System.out.println("Welcome! Analyst "+Title);
 			System.out.println("Type '.director .analysis [collectorID] [results]' to send results back");
 			directorOut.println(".settings .analyst " + Title);
@@ -189,6 +212,7 @@ public class Client implements Runnable {
 			try
 			{
 				String str = in.readLine();
+				
 				if(str.equals("."))
 				{
 					directorOut.println(str);
@@ -196,16 +220,35 @@ public class Client implements Runnable {
 					bankOut.println(str);
 					bankOut.flush();
 				}
-				if(str.startsWith(".director "))
+		
+				else if(str.startsWith(".director "))
 				{
-					directorOut.println(str);
-					directorOut.flush();
+					if(str.startsWith(".director .analysis")){
+						String data = str.substring(26, str.length());
+						if(eCents.size() == 0){
+							System.out.println("No eCents");
+						}
+						else{
+							try {
+								DATA = AES_Cipher.encrypt(eCents.get(0) +" "+ data);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							System.out.println(str.substring(0, 26)+ DATA);
+							directorOut.println(str.substring(0, 26)+ DATA);
+							directorOut.flush();
+							
+						}
+					}
+
+					//directorOut.println(str);
+				//	directorOut.flush();
 				}
 				if(str.startsWith(".bank "))
 				{
 					bankOut.println(str);
 					bankOut.flush();
-				}
+					}
 				Thread.sleep(10);
 			}
 			catch (IOException ioe)
@@ -255,7 +298,7 @@ public class Client implements Runnable {
 		client.close();
 		client.interrupt();
 	}
-	
+
 	public Thread getThread()
 	{
 		return thread;
