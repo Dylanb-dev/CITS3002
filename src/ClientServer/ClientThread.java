@@ -62,6 +62,12 @@ public class ClientThread extends Thread
 				client.stop();
 				break;
 			}
+			catch (NullPointerException npe)
+			{
+				System.out.println("Connection Error. Press <ENTER> to reconnect.");
+				client.stop();
+				break;
+			}
 		}
 	}
 }
