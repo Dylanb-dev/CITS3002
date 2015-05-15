@@ -80,23 +80,47 @@ public class Director implements Runnable {
 			clients.get(pos).send(".");
 			remove(ID);
 		}
-		else if(input.startsWith(".director .collector ")){
-			input = input.substring(21, input.length());
-			map.put(ID, input);
-			System.out.println("CollectorID: " +ID +" Type: "+ input);
+		else if(input.startsWith(".settings "))
+		{
+			input = input.substring(10, input.length());
+			if(input.equals(".collector"))
+			{
+				map.put(ID, "collector");
+				System.out.println("CollectorID: " +ID +" Type: collector");
+			}
+			if(input.startsWith(".analyst "))
+			{
+				input = input.substring(9, input.length());
+				map.put(ID, input);
+				System.out.println("AnalystID: " +ID +" Type: " + input);
+			}
 		}
-		
-		
-		
 		else if(input.startsWith(".director "))
 		{
 			input = input.substring(10, input.length());
-			for(int i = 0; i < clients.size(); i++)
+			
+			if(input.startsWith(".analysis "))
 			{
-				if(input.equals(".")) break;
-				if(i != pos)
+				if(map.get(ID).equals("collector"))
 				{
-					clients.get(i).send(ID + ": " + input);
+					//send input from collector to analyst
+					System.out.println("collector");
+				}
+				else
+				{
+					//send input from analyst to collector
+					System.out.println("analyst");
+				}
+			}
+			else
+			{
+				for(int i = 0; i < clients.size(); i++)
+				{
+					if(input.equals(".")) break;
+					if(i != pos)
+					{
+						clients.get(i).send(ID + ": " + input);
+					}
 				}
 			}
 		}

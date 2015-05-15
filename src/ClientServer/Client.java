@@ -17,12 +17,62 @@ public class Client implements Runnable {
 	private Thread thread = null;
 	private PrintWriter directorOut = null;
 	private PrintWriter bankOut = null;
+	private int job = 0;
+	private String Title = "";
 	
 	
 	public static void main(String args[])
 	{
+		int type = 0;
 		String str = "";
+		String title = "";
 		BufferedReader sysIn = new BufferedReader(new InputStreamReader(System.in));
+		while(true)
+		{
+			System.out.print("Type 'collector' or 'analyst' to select a job: ");
+			try 
+			{
+				str = sysIn.readLine();
+				if(str.equals("collector"))
+				{
+					type = 1;
+					break;
+				}
+				else if(str.equals("analyst"))
+				{
+					type = 2;
+					break;
+				}
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+		if(type == 2)
+		{
+			while(true)
+			{
+				System.out.print("Type analyst title: ");
+				try 
+				{
+					str = sysIn.readLine();
+					if(!str.equals("collector"))
+					{
+						title = str;
+						break;
+					}
+					else
+					{
+						System.out.println("Cannot be a collector analyst");
+					}
+				} 
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 		while(true)
 		{
 			System.out.println();
@@ -41,7 +91,7 @@ public class Client implements Runnable {
 					break;
 				}
 				String strs[] = str.split(" ");
-				Client client = new Client(strs[0], Integer.parseInt(strs[1]), strs[2], Integer.parseInt(strs[3]));
+				Client client = new Client(strs[0], Integer.parseInt(strs[1]), strs[2], Integer.parseInt(strs[3]), type, title);
 				Thread thread = client.getThread();
 				while(thread.isAlive() && thread != null)
 				{
@@ -78,8 +128,10 @@ public class Client implements Runnable {
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
 	
-	public Client(String directorName, int directorPort, String bankName, int bankPort)
+	public Client(String directorName, int directorPort, String bankName, int bankPort, int jobType, String title)
 	{
+		job = jobType;
+		Title = title;
 		SSLSocketFactory f = 
 				(SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
@@ -117,6 +169,9 @@ public class Client implements Runnable {
 	public void run()
 	{
 		System.out.println("Welcome!");
+		if(job == 1) directorOut.println(".settings .collector");
+		if(job == 2) directorOut.println(".settings .analyst " + Title);
+		directorOut.flush();
 		while (thread != null)
 		{
 			try
