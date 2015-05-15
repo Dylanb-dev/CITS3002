@@ -4,7 +4,10 @@ import java.io.*;
 import java.net.*;
 import java.security.*;
 import java.util.*;
+
 import javax.net.ssl.*;
+
+import DirectorTest.Director;
 
 
 public class Bank implements Runnable {
@@ -145,10 +148,37 @@ public class Bank implements Runnable {
 		String ksName = "bin/ServerClient/bank.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
-		new Bank(1244, ksName, ksPass, ctPass);
+		String str = "";
+		BufferedReader sysIn = new BufferedReader(new InputStreamReader(System.in));
+		while(true)
+		{
+			System.out.println();
+			System.out.println("Please enter server port: ");
+			try 
+			{
+				str = sysIn.readLine();
+				if(str.equals("."))
+				{
+					break;
+				}
+				Bank bank = new Bank(Integer.parseInt(str), ksName, ksPass, ctPass);
+				Thread thread = bank.getThread();
+				while(thread.isAlive() && thread != null)
+				{
+					Thread.sleep(1);
+				}
+			}
+			catch ( Exception e )
+			{
+				System.out.println("Error in main: " + e.getMessage());
+			}
+		}
 	}
-	
-	
+
+	public Thread getThread()
+	{
+		return thread;
+	}
 	
 	//Print outs for socket and Server
 	

@@ -146,10 +146,37 @@ public class Director implements Runnable {
 		String ksName = "bin/ServerClient/bank.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
-		new Director(2234, ksName, ksPass, ctPass);
+		String str = "";
+		BufferedReader sysIn = new BufferedReader(new InputStreamReader(System.in));
+		while(true)
+		{
+			System.out.println();
+			System.out.println("Please enter server port: ");
+			try 
+			{
+				str = sysIn.readLine();
+				if(str.equals("."))
+				{
+					break;
+				}
+				Director director = new Director(Integer.parseInt(str), ksName, ksPass, ctPass);
+				Thread thread = director.getThread();
+				while(thread.isAlive() && thread != null)
+				{
+					Thread.sleep(1);
+				}
+			}
+			catch ( Exception e )
+			{
+				System.out.println("Error in main: " + e.getMessage());
+			}
+		}
 	}
-	
-	
+
+	public Thread getThread()
+	{
+		return thread;
+	}
 	
 	//Print outs for socket and Server
 	
