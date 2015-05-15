@@ -15,12 +15,6 @@ public class DES_Cypher {
 
 	public static void main(String args[]) throws Exception {
 	    SecretKey key = KeyGenerator.getInstance("DES").generateKey();
-	   
-	    /*String echo;
-	    for(int i = 0; i < args.length; i++) {
-            System.out.println(args[i]);
-            
-        }*/
 
 	    byte[] initVector = new byte[] { 0x10, 0x10, 0x01, 0x04, 0x01, 0x01, 0x01, 0x02 };
 
@@ -31,14 +25,17 @@ public class DES_Cypher {
 	    m_encrypter.init(Cipher.ENCRYPT_MODE, key, algParamSpec);
 	    m_decrypter.init(Cipher.DECRYPT_MODE, key, algParamSpec);
 
-	    //working on echo get
-	    byte[] originalText = echo.getBytes();
+	    byte[] originalText = "test".getBytes();
+	    String echo_originalText = new String(originalText);
 
 	    byte[] encryptedText = m_encrypter.doFinal(originalText);
+	    String echo_ecryptedText = new String(encryptedText);
 
 	    byte[] decryptedText = m_decrypter.doFinal(encryptedText);
+	    String echo_decryptedText = new String(decryptedText);
+	    
 
-	    System.out.println(new String(originalText));
+	    System.out.println(new String(echo_originalText));
 	    System.out.println(new String(encryptedText));
 	    System.out.println(new String(decryptedText));
 
