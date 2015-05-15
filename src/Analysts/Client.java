@@ -1,4 +1,4 @@
-package ClientServer;
+package Analysts;
 
 import java.io.*;
 
@@ -32,7 +32,7 @@ public class Client implements Runnable {
 			System.out.print("Type 'collector' or 'analyst' to select a job: ");
 			try 
 			{
-				str = sysIn.readLine().toLowerCase();
+				str = sysIn.readLine();
 				if(str.equals("collector"))
 				{
 					type = 1;
@@ -53,10 +53,10 @@ public class Client implements Runnable {
 		{
 			while(true)
 			{
-				System.out.print("Type analyst title [5 letter datatype]: ");
+				System.out.print("Type analyst title: ");
 				try 
 				{
-					str = sysIn.readLine().toLowerCase();
+					str = sysIn.readLine();
 					if(!str.equals("collector"))
 					{
 						title = str;
@@ -168,21 +168,9 @@ public class Client implements Runnable {
 	@Override
 	public void run()
 	{
-		
-		if(job == 1) {
-			
-			System.out.println("Welcome! Collector ");
-			System.out.println("Type '.director .analysis [5 letter datatype] "
-					+ "[data]' to send data to be analysed");
-			
-			directorOut.println(".settings .collector");
-		}
-		if(job == 2) {
-			
-			System.out.println("Welcome! Analyst "+Title);
-			System.out.println("Type '.director .analysis [collectorID] [results]' to send results back");
-			directorOut.println(".settings .analyst " + Title);
-		}
+		System.out.println("Welcome!");
+		if(job == 1) directorOut.println(".settings .collector");
+		if(job == 2) directorOut.println(".settings .analyst " + Title);
 		directorOut.flush();
 		while (thread != null)
 		{

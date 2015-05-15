@@ -9,31 +9,31 @@ import javax.net.ssl.*;
 
 
 public class Director implements Runnable {
-	
+
 	private SSLServerSocket server = null;
 	private Thread thread = null;
 	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
 	private HashMap<Integer, String> map = new HashMap<Integer, String>();
-	
+
 	public Director(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
 		try {
 			KeyStore ks = KeyStore.getInstance("JKS");
-			
+
 			ks.load(new FileInputStream(ksName), ksPass);
-			
+
 			KeyManagerFactory kmf = 
 					KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-			
+
 			kmf.init(ks, ctPass);
-			
+
 			SSLContext sc = SSLContext.getInstance("TLS");
-			
+
 			sc.init(kmf.getKeyManagers(), null, null);
-						
+
 			SSLServerSocketFactory ssf = sc.getServerSocketFactory();
 			//SSLSocket server = (SSLSocket) s.accept();
-						
+
 			System.out.println("Binding to port " + port + ", please wait ...");
 			//server = new ServerSocket(port);
 			server = (SSLServerSocket) ssf.createServerSocket(port);
@@ -45,7 +45,7 @@ public class Director implements Runnable {
 			System.out.println("Exception : " + e);
 		}
 	}
-	
+
 	public void run() {
 		while(thread != null)
 		{
@@ -62,7 +62,7 @@ public class Director implements Runnable {
 			}
 		}
 	}
-	
+
 	private int findClient(int ID)
 	{
 		for(int i = 0; i < clients.size(); i++)
@@ -98,21 +98,46 @@ public class Director implements Runnable {
 		else if(input.startsWith(".director "))
 		{
 			input = input.substring(10, input.length());
-			
 			if(input.startsWith(".analysis "))
 			{
+				
+				input = input.substring(10, input.length());
+		
 				if(map.get(ID).equals("collector"))
 				{
-					//send input from collector to analyst
-					System.out.println("collector");
+					//send input from director to analyst
+
+					System.out.println("Looking for an analyst for " +input.substring(0, 5));
+					int analystID = 0;
+					for (Integer key : map.keySet()) {	
+						System.out.println(key+" "+map.get(key));
+						if(map.get(key).equals(input.substring(0, 5))){
+							clients.get(findClient(key)).send("ID "+ID + " data " + input);
+							System.out.println("DATA sent to Analyst "+key);
+							//map.remove(key); THIS SHIT IS BROKEN
+							analystID = key; 
+							break;
+						}
+					}
+
+					System.out.println("Data from Collector Processing by "+analystID);
 				}
 				else
 				{
-					//send input from analyst to collector
-					System.out.println("analyst");
+					
+					//send result from analyst to collector
+					int returnID = Integer.parseInt(input.substring(0, 5));
+					System.out.println("Sending results to " +returnID);
+					String result = input.substring(6, input.length());
+					clients.get(findClient(returnID)).send("Analysts ID: "+ID + " result: " + result);
+					System.out.println("RESULT sent to Collector "+returnID);
+					//map.remove(returnID); BREAKS EVERYTHING
+
+					System.out.println("Result from Analyst sent back to " +returnID);
 				}
 			}
-			else
+		
+			else if(input.startsWith(".test ")) 
 			{
 				for(int i = 0; i < clients.size(); i++)
 				{
@@ -124,6 +149,7 @@ public class Director implements Runnable {
 				}
 			}
 		}
+		
 		else if(input.startsWith(".bank "))
 		{
 			clients.get(pos).send("This is not a Bank. Please disconnect with '.' and check your connection settings...");
@@ -149,7 +175,7 @@ public class Director implements Runnable {
 		}
 		handle(0, ID + " disconnected ...");
 	}
-	
+
 	public void addThread(SSLSocket socket)
 	{
 		System.out.println("Client accepted: " + socket.getInetAddress());
@@ -161,8 +187,8 @@ public class Director implements Runnable {
 			System.out.println("Error opening thread: " + ioe);
 		}
 	}
-	
-	
+
+
 	public void start() {
 		if (thread == null) {
 			thread = new Thread(this);
@@ -214,10 +240,10 @@ public class Director implements Runnable {
 	{
 		return thread;
 	}
-	
+
 	//Print outs for socket and Server
-	
-	
+
+
 	private static void printSocketInfo(SSLSocket s) {
 		System.out.println("Socket class: "+s.getClass());
 		System.out.println("   Remote address = "
@@ -234,7 +260,7 @@ public class Director implements Runnable {
 		System.out.println("   Cipher suite = "+ss.getCipherSuite());
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
-	
+
 	private static void printServerSocketInfo(SSLServerSocket s) {
 		System.out.println("Server socket class: "+s.getClass());
 		System.out.println("   Socker address = "

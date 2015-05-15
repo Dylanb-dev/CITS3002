@@ -1,6 +1,7 @@
 package BankTest;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.security.*;
 import java.util.*;
@@ -11,31 +12,34 @@ import DirectorTest.Director;
 
 
 public class Bank implements Runnable {
-	
+
+	private SecureRandom random = new SecureRandom();
 	private SSLServerSocket server = null;
 	private Thread thread = null;
 	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
-	private HashMap<Integer, Integer> loans = new HashMap<Integer, Integer>();
+	private HashMap<String, Integer> loans = new HashMap<String, Integer>();
+	private HashMap<String, Integer> deposits = new HashMap<String, Integer>();
+
 	
 	public Bank(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
 		try {
 			KeyStore ks = KeyStore.getInstance("JKS");
-			
+
 			ks.load(new FileInputStream(ksName), ksPass);
-			
+
 			KeyManagerFactory kmf = 
 					KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-			
+
 			kmf.init(ks, ctPass);
-			
+
 			SSLContext sc = SSLContext.getInstance("TLS");
-			
+
 			sc.init(kmf.getKeyManagers(), null, null);
-						
+
 			SSLServerSocketFactory ssf = sc.getServerSocketFactory();
 			//SSLSocket server = (SSLSocket) s.accept();
-						
+
 			System.out.println("Binding to port " + port + ", please wait ...");
 			//server = new ServerSocket(port);
 			server = (SSLServerSocket) ssf.createServerSocket(port);
@@ -47,7 +51,7 @@ public class Bank implements Runnable {
 			System.out.println("Exception : " + e);
 		}
 	}
-	
+
 	public void run() {
 		while(thread != null)
 		{
@@ -64,7 +68,7 @@ public class Bank implements Runnable {
 			}
 		}
 	}
-	
+
 	private int findClient(int ID)
 	{
 		for(int i = 0; i < clients.size(); i++)
@@ -85,6 +89,43 @@ public class Bank implements Runnable {
 		else if(input.startsWith(".bank "))
 		{
 			input = input.substring(6, input.length());
+			if(input.equals("withdraw")){
+				System.out.println("eCent withdrawl requested from "+ID);
+				String eCent = new BigInteger(130, random).toString(32);
+				loans.put(eCent,ID);
+				clients.get(pos).send(eCent);
+				System.out.println("eCent sent to "+ID);
+				System.out.println(loans.toString());
+				System.out.println(deposits.toString());
+
+
+
+			}
+			else if(input.startsWith("deposit ")){
+				input = input.substring(8, input.length());
+				System.out.println("eCent "+input+" deposit requested from "+ID);
+				System.out.println(loans.get(input));
+				
+				if(loans.get(input) == ID){
+					clients.get(pos).send("You have already made the deposit");
+					System.out.println(loans.toString());
+					System.out.println(deposits.toString());
+				}
+				else if(loans.get(input) != ID) {
+					deposits.put(input,ID);
+					clients.get(pos).send("Thank you for the deposit");
+					System.out.println(loans.toString());
+					System.out.println(deposits.toString());
+				}
+				else{
+					clients.get(pos).send("Something went wrong...");
+					System.out.println(loans.toString());
+					System.out.println(deposits.toString());
+				}
+
+			}
+				
+		else if (input.startsWith(".test")) {
 			for(int i = 0; i < clients.size(); i++)
 			{
 				if(input.equals(".")) break;
@@ -94,6 +135,9 @@ public class Bank implements Runnable {
 				}
 			}
 		}
+		}
+
+
 		else if(input.startsWith(".director "))
 		{
 			clients.get(pos).send("This is not a Director. Please disconnect with '.' and check your connection settings...");
@@ -119,7 +163,7 @@ public class Bank implements Runnable {
 		}
 		handle(0, ID + " disconnected ...");
 	}
-	
+
 	public void addThread(SSLSocket socket)
 	{
 		System.out.println("Client accepted: " + socket.getInetAddress());
@@ -131,8 +175,8 @@ public class Bank implements Runnable {
 			System.out.println("Error opening thread: " + ioe);
 		}
 	}
-	
-	
+
+
 	public void start() {
 		if (thread == null) {
 			thread = new Thread(this);
@@ -184,10 +228,10 @@ public class Bank implements Runnable {
 	{
 		return thread;
 	}
-	
+
 	//Print outs for socket and Server
-	
-	
+
+
 	private static void printSocketInfo(SSLSocket s) {
 		System.out.println("Socket class: "+s.getClass());
 		System.out.println("   Remote address = "
@@ -204,7 +248,7 @@ public class Bank implements Runnable {
 		System.out.println("   Cipher suite = "+ss.getCipherSuite());
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
-	
+
 	private static void printServerSocketInfo(SSLServerSocket s) {
 		System.out.println("Server socket class: "+s.getClass());
 		System.out.println("   Socker address = "
