@@ -89,7 +89,7 @@ public class Bank implements Runnable {
 		else if(input.startsWith(".bank "))
 		{
 			input = input.substring(6, input.length());
-			if(input.equals("withdraw")){
+			if(input.equals(".withdraw")){
 				System.out.println("eCent withdrawl requested from "+ID);
 				String eCent = new BigInteger(130, random).toString(32);
 				loans.put(eCent,ID);
@@ -101,7 +101,7 @@ public class Bank implements Runnable {
 
 
 			}
-			else if(input.startsWith("deposit ")){
+			else if(input.startsWith(".deposit ")){
 				input = input.substring(8, input.length());
 				System.out.println("eCent "+input+" deposit requested from "+ID);
 				System.out.println(loans.get(input));
