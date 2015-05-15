@@ -8,7 +8,7 @@ public class ClientThread extends Thread
 	private Client client = null;
 	private BufferedReader in = null;
 	private SSLSocket socket = null;
-	
+
 	public ClientThread(Client _client, SSLSocket _socket)
 	{
 		client = _client;
@@ -63,12 +63,7 @@ public class ClientThread extends Thread
 				client.stop();
 				break;
 			}
-			catch (NullPointerException npe)
-			{
-				System.out.println("Connection Error. Press <ENTER> to reconnect.");
-				client.stop();
-				break;
-			}
+
 		}
 	}
 }
