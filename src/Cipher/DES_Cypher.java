@@ -29,15 +29,15 @@ public class DES_Cypher {
 	    String echo_originalText = new String(originalText);
 
 	    byte[] encryptedText = m_encrypter.doFinal(originalText);
-	    String echo_ecryptedText = new String(encryptedText);
+	    String echo_encryptedText = new String(encryptedText);
 
 	    byte[] decryptedText = m_decrypter.doFinal(encryptedText);
 	    String echo_decryptedText = new String(decryptedText);
 	    
 
 	    System.out.println(new String(echo_originalText));
-	    System.out.println(new String(encryptedText));
-	    System.out.println(new String(decryptedText));
+	    System.out.println(new String(echo_encryptedText));
+	    System.out.println(new String(echo_decryptedText));
 
 	  }
 }
