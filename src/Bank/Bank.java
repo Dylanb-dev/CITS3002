@@ -103,12 +103,12 @@ public class Bank implements Runnable {
 				System.out.println("eCent "+input+" deposit requested from "+ID);
 				System.out.println(loans.get(input));
 				
-				if(loans.get(input) == ID){
-					clients.get(pos).send("You have already made the deposit");
+				if(deposits.containsKey(input)){
+					clients.get(pos).send("eCent is already deposited");
 					System.out.println(loans.toString());
 					System.out.println(deposits.toString());
 				}
-				else if(loans.get(input) != ID) {
+				else if(loans.containsKey(input)) {
 					deposits.put(input,ID);
 					clients.get(pos).send("Thank you for the deposit");
 					System.out.println(loans.toString());

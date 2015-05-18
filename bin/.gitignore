@@ -1,7 +1,4 @@
-/ClientServer/
-/ServerClient/
-/BankTest/
-/DirectorTest/
+/Collectors/
 /Analysts/
-/Cipher/
+/DirectorTest/
 /Bank/
