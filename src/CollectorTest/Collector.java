@@ -179,6 +179,10 @@ public class Collector implements Runnable {
 							
 						}
 					}
+					if(str.startsWith(".director .available")){
+						directorOut.println(str);
+						directorOut.flush();
+					}
 
 					//directorOut.println(str);
 				//	directorOut.flush();

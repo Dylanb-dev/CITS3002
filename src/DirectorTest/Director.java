@@ -148,6 +148,20 @@ public class Director implements Runnable {
 					}
 				}
 			}
+			
+			else if(input.startsWith(".available"))
+			{
+				Iterator<Integer> iter = map.keySet().iterator();
+				while(iter.hasNext())
+				{
+					int i = iter.next();
+					String temp = map.get(i);
+					if(temp != "collector")
+					{
+						clients.get(pos).send("\t" + temp);
+					}
+				}
+			}
 		}
 
 		else if(input.startsWith(".bank "))
