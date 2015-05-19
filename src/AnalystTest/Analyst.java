@@ -22,7 +22,9 @@ public class Analyst implements Runnable {
 	private String DATA = "";
 	private ArrayList<String> eCents = new ArrayList<String>();
 	private AES_Cipher aes = new AES_Cipher();
-	private recs[] = new String[2];
+	private String recs[] = new String[2];
+	private int CollectorID = 0;
+
 
 	public static void main(String args[])
 	{
@@ -146,36 +148,43 @@ public class Analyst implements Runnable {
 		if(msg.startsWith("ID "))
 		{
 			System.out.println(msg);
+			System.out.println(msg.substring(3, 8));
+
+			CollectorID = Integer.parseInt(msg.substring(3, 8));
 			String rec = msg.substring(20, msg.length());
 			System.out.println("STRING FOR DECYPTION '" + rec + "'");
-			directorOut.println(".director .recieved "+msg.substring(4, 9));
+			directorOut.println(".director .received "+CollectorID);
 			directorOut.flush();
-			
-			
+			System.out.println(".director .received "+CollectorID);
+			System.out.println("Sent received to Director");
+
+
+
 			try{
-			   rec = AES_Cipher.decrypt(rec);
+				rec = AES_Cipher.decrypt(rec);
 			}  catch (Exception e) {
 				e.printStackTrace();
 			}
-	
-			
-			System.out.println("data and eCent: " + rec);
 			String recs[] = rec.split(" ",2);
-			
-			
-			bankOut.println(".bank .deposit "+recs[0]);
-			
-		}
-		
+			bankOut.println(".bank .deposit "+recs[0]);	
+			bankOut.flush();
+			System.out.println("data and eCent: " + rec);
+
+		}	
+
 		if(msg.startsWith("Thank you for the deposit")){
-			System.out.println("Successfully Deposited eCent");
-			
-			
-			directorOut.println(".director .completed "+);
+			System.out.println("Successfully Deposited eCent, Performed Analysis");
+			directorOut.println(".director .completed "+CollectorID);
 			directorOut.flush();
+			System.out.println("Sent completed to Director");
+
 		}
+
+
 		else System.out.println(msg);
 	}
+
+
 
 	@Override
 	public void run()
@@ -184,13 +193,13 @@ public class Analyst implements Runnable {
 		System.out.println("Type '.director .analysis [collectorID] [results]' to send results back");
 		directorOut.println(".settings .analyst " + Title);
 		directorOut.flush();
-		
+
 		while (thread != null)
 		{
 			try
 			{
 				String str = in.readLine();
-				
+
 				if(str.equals("."))
 				{
 					directorOut.println(str);
@@ -198,7 +207,7 @@ public class Analyst implements Runnable {
 					bankOut.println(str);
 					bankOut.flush();
 				}
-		
+
 				else if(str.startsWith(".director "))
 				{
 					if(str.startsWith(".director .analysis")){
@@ -215,18 +224,18 @@ public class Analyst implements Runnable {
 							System.out.println(str.substring(0, 26)+ DATA);
 							directorOut.println(str.substring(0, 26)+ DATA);
 							directorOut.flush();
-							
+
 						}
 					}
 
 					//directorOut.println(str);
-				//	directorOut.flush();
+					//	directorOut.flush();
 				}
 				if(str.startsWith(".bank "))
 				{
 					bankOut.println(str);
 					bankOut.flush();
-					}
+				}
 				Thread.sleep(10);
 			}
 			catch (IOException ioe)

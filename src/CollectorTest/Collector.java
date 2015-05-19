@@ -159,7 +159,7 @@ public class Collector implements Runnable {
 								e.printStackTrace();
 							}
 							System.out.println("Sending " + data + "...");
-							//System.out.println(str.substring(0, 26)+ DATA);
+							System.out.println(str.substring(0, 26)+ DATA);
 							directorOut.println(str.substring(0, 26)+ DATA);
 							directorOut.flush();
 						}
