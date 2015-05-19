@@ -197,6 +197,10 @@ public class Director implements Runnable {
 			else if(input.startsWith(".available"))
 			{
 				Iterator<Integer> iter = map.keySet().iterator();
+				if(busyMap.isEmpty())
+				{
+					clients.get(pos).send("There are no available analysts");
+				}
 				while(iter.hasNext())
 				{
 					int i = iter.next();

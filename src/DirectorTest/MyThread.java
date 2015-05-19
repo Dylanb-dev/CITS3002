@@ -45,15 +45,19 @@ public class MyThread extends Thread {
 		{
 			String m = "Connected!";
 			server.handle(ID, m);
-			while ((m=r.readLine())!= null) {
+			while ((m=r.readLine())!= null) 
+			{
 				server.handle(ID, m);
 			}
-		} catch (Exception e) {
-			if (e.getMessage().equals("Connection reset"))
+			if(m == null)
 			{
-				System.out.println("Connection problem: " + e.getMessage());
-				server.remove(ID);
+				throw new Exception();
 			}
+		} 
+		catch (Exception e) 
+		{
+			System.out.println("Connection problem: " + e.getMessage());
+			server.remove(ID);
 		}
 	}
 	public void open() throws IOException
