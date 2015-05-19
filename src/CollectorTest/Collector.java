@@ -120,20 +120,7 @@ public class Collector implements Runnable {
 			eCents.add(msg.substring(6, msg.length()));
 			System.out.println("eCent added: "+ eCents.toString());
 		}
-		if(msg.startsWith("ID "))
-		{
-			System.out.println(msg);
-			String rec = "";
-			try{
-				rec += AES_Cipher.decrypt(msg.substring(19, msg.length()));
-			}  catch (Exception e) {
-				e.printStackTrace();
-			}
-	
-			System.out.println("data and eCent: " + rec);
-		}
-		
-		
+
 		else System.out.println(msg);
 	}
 
@@ -141,17 +128,15 @@ public class Collector implements Runnable {
 	public void run()
 	{
 		System.out.println("Welcome! Collector ");
-		System.out.println("Type '.director .analysis [5 letter datatype] "
-				+ "[data]' to send data to be analysed");
 		directorOut.println(".settings .collector");
 		directorOut.flush();
-		
+
 		while (thread != null)
 		{
 			try
 			{
 				String str = in.readLine();
-				
+
 				if(str.equals("."))
 				{
 					directorOut.println(str);
@@ -159,7 +144,7 @@ public class Collector implements Runnable {
 					bankOut.println(str);
 					bankOut.flush();
 				}
-		
+
 				else if(str.startsWith(".director "))
 				{
 					if(str.startsWith(".director .analysis")){
@@ -173,10 +158,10 @@ public class Collector implements Runnable {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-							System.out.println(str.substring(0, 26)+ DATA);
+							System.out.println("Sending " + data + "...");
+							//System.out.println(str.substring(0, 26)+ DATA);
 							directorOut.println(str.substring(0, 26)+ DATA);
 							directorOut.flush();
-							
 						}
 					}
 					if(str.startsWith(".director .available")){
@@ -185,14 +170,32 @@ public class Collector implements Runnable {
 					}
 
 					//directorOut.println(str);
-				//	directorOut.flush();
+					//	directorOut.flush();
 				}
-				if(str.startsWith(".bank "))
+				else if(str.startsWith(".bank "))
 				{
 					bankOut.println(str);
 					bankOut.flush();
-					}
+				}
+				
+				else if(str.startsWith(".help"))
+				{
+					System.out.println("You can use the following commands:");
+					System.out.println("\t.director .available");
+					System.out.println("\t.director .analysis [5 letter title] [data]");
+					System.out.println("\t.bank .withdraw");
+					System.out.println("\t.bank .deposit");
+				}
+				
+				else {
+					System.out.println("Type '.help' for help");
+				}
+				
+				
+				
 				Thread.sleep(10);
+				
+				
 			}
 			catch (IOException ioe)
 			{

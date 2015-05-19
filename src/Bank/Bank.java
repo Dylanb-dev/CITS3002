@@ -113,6 +113,8 @@ public class Bank implements Runnable {
 					clients.get(pos).send("Thank you for the deposit");
 					System.out.println(loans.toString());
 					System.out.println(deposits.toString());
+					clients.get(loans.get(input)).send("eCent Deposited by " + ID);
+
 				}
 				else{
 					clients.get(pos).send("Something went wrong...");

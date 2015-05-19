@@ -22,7 +22,7 @@ public class Analyst implements Runnable {
 	private String DATA = "";
 	private ArrayList<String> eCents = new ArrayList<String>();
 	private AES_Cipher aes = new AES_Cipher();
-
+	private recs[] = new String[2];
 
 	public static void main(String args[])
 	{
@@ -146,17 +146,34 @@ public class Analyst implements Runnable {
 		if(msg.startsWith("ID "))
 		{
 			System.out.println(msg);
-			String rec = "";
+			String rec = msg.substring(20, msg.length());
+			System.out.println("STRING FOR DECYPTION '" + rec + "'");
+			directorOut.println(".director .recieved "+msg.substring(4, 9));
+			directorOut.flush();
+			
+			
 			try{
-				rec += AES_Cipher.decrypt(msg.substring(19, msg.length()));
+			   rec = AES_Cipher.decrypt(rec);
 			}  catch (Exception e) {
 				e.printStackTrace();
 			}
 	
+			
 			System.out.println("data and eCent: " + rec);
+			String recs[] = rec.split(" ",2);
+			
+			
+			bankOut.println(".bank .deposit "+recs[0]);
+			
 		}
 		
-		
+		if(msg.startsWith("Thank you for the deposit")){
+			System.out.println("Successfully Deposited eCent");
+			
+			
+			directorOut.println(".director .completed "+);
+			directorOut.flush();
+		}
 		else System.out.println(msg);
 	}
 
