@@ -1,5 +1,6 @@
 package DirectorTest;
 
+import java.awt.Dimension;
 import java.io.*;
 import java.net.*;
 import java.security.*;
@@ -14,6 +15,7 @@ public class Director implements Runnable {
 	private Thread thread = null;
 	private ArrayList<MyThread> clients = new ArrayList<MyThread>();
 	private HashMap<Integer, String> map = new HashMap<Integer, String>();
+	private HashMap<Integer, Boolean> busyMap = new HashMap<Integer, Boolean>();
 
 	public Director(int port, String ksName, char[] ksPass, char[] ctPass)
 	{
@@ -74,7 +76,6 @@ public class Director implements Runnable {
 	}
 	public synchronized void handle(int ID, String input)
 	{
-		System.out.println("FROM::: " + input);
 		int pos = findClient(ID);
 		if(input.equals("."))
 		{
@@ -93,6 +94,7 @@ public class Director implements Runnable {
 			{
 				input = input.substring(9, input.length());
 				map.put(ID, input);
+				busyMap.put(ID, false);
 				System.out.println("AnalystID: " +ID +" Type: " + input);
 			}
 		}
@@ -108,21 +110,40 @@ public class Director implements Runnable {
 				{
 					//send input from director to analyst
 
-					System.out.println("Looking for an analyst for " +input.substring(0, 5));
+					//System.out.println("Looking for an analyst for " +input.substring(0, 5));
 					int analystID = 0;
-					for (Integer key : map.keySet()) {	
+					boolean busy = false;
+					boolean found = false;
+					for (Integer key : map.keySet()) 
+					{	
 						System.out.println(key+" "+map.get(key));
-						if(map.get(key).equals(input.substring(0, 5))){
-							clients.get(findClient(key)).send("ID "+ID + " data " + input);
-							System.out.println("TO ANALYST::: ID "+ID + " data " + input);
-							System.out.println("DATA sent to Analyst "+key);
-							//map.remove(key); THIS SHIT IS BROKEN
-							analystID = key; 
-							break;
+						if(map.get(key).equals(input.substring(0, 5)))
+						{
+							found = true;
+							if(!busyMap.get(key))
+							{
+								busy = false;
+								clients.get(findClient(key)).send("ID "+ID + " data " + input);
+								System.out.println("DATA sent to Analyst "+key);
+								//map.remove(key); THIS SHIT IS BROKEN
+								analystID = key; 
+								break;
+							}
+							else busy = true;
 						}
 					}
-
-					System.out.println("Data from Collector Processing by "+analystID);
+					if(!found)
+					{
+						clients.get(pos).send("There are no analysts of this title.");
+					}
+					else if(busy)
+					{
+						clients.get(pos).send("All " + input.substring(0, 5) + " analysts are busy.");
+					}
+					else
+					{
+						System.out.println("Data from Collector Processing by " + analystID);
+					}
 				}
 				else
 				{
@@ -137,6 +158,26 @@ public class Director implements Runnable {
 
 					System.out.println("Result from Analyst sent back to " +returnID);
 				}
+			}
+			
+			else if(input.startsWith(".received "))
+			{
+				input = input.substring(10, input.length());
+				
+				busyMap.put(pos, true);
+				int collectorID = Integer.parseInt(input);
+				
+				clients.get(collectorID).send("Data successfully recieved by analyst...");
+			}
+			
+			else if(input.startsWith(".completed "))
+			{
+				input = input.substring(11, input.length());
+				
+				busyMap.put(pos, false);
+				int collectorID = Integer.parseInt(input);
+				
+				clients.get(collectorID).send("Data analysis completed.");
 			}
 
 			else if(input.startsWith(".test ")) 
