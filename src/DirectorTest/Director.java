@@ -74,6 +74,7 @@ public class Director implements Runnable {
 	}
 	public synchronized void handle(int ID, String input)
 	{
+		System.out.println("FROM::: " + input);
 		int pos = findClient(ID);
 		if(input.equals("."))
 		{
@@ -113,6 +114,7 @@ public class Director implements Runnable {
 						System.out.println(key+" "+map.get(key));
 						if(map.get(key).equals(input.substring(0, 5))){
 							clients.get(findClient(key)).send("ID "+ID + " data " + input);
+							System.out.println("TO ANALYST::: ID "+ID + " data " + input);
 							System.out.println("DATA sent to Analyst "+key);
 							//map.remove(key); THIS SHIT IS BROKEN
 							analystID = key; 
