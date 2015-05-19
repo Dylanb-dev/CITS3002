@@ -165,9 +165,10 @@ public class Director implements Runnable {
 				input = input.substring(10, input.length());
 				
 				busyMap.put(pos, true);
+				System.out.println(input);
 				int collectorID = Integer.parseInt(input);
 				
-				clients.get(collectorID).send("Data successfully recieved by analyst...");
+				clients.get(findClient(collectorID)).send("Data successfully recieved by analyst...");
 			}
 			
 			else if(input.startsWith(".completed "))
@@ -175,9 +176,10 @@ public class Director implements Runnable {
 				input = input.substring(11, input.length());
 				
 				busyMap.put(pos, false);
+				System.out.println(input);
 				int collectorID = Integer.parseInt(input);
 				
-				clients.get(collectorID).send("Data analysis completed.");
+				clients.get(findClient(collectorID)).send("Data analysis completed.");
 			}
 
 			else if(input.startsWith(".test ")) 
@@ -220,6 +222,8 @@ public class Director implements Runnable {
 			MyThread toTerminate = clients.get(pos);
 			System.out.println("Removing client thread " + ID + " at " + pos);
 			clients.remove(pos);
+			map.remove(ID);
+			busyMap.remove(ID);
 			try
 			{
 				toTerminate.close();

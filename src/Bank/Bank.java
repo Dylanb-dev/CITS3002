@@ -99,7 +99,7 @@ public class Bank implements Runnable {
 
 			}
 			else if(input.startsWith(".deposit ")){
-				input = input.substring(8, input.length());
+				input = input.substring(9, input.length());
 				System.out.println("eCent "+input+" deposit requested from "+ID);
 				System.out.println(loans.get(input));
 				
