@@ -115,10 +115,16 @@ public class Collector implements Runnable {
 		{
 			stop();
 		}
-		if(msg.startsWith("eCent "))
+		else if(msg.startsWith("eCent "))
 		{
 			eCents.add(msg.substring(6, msg.length()));
 			System.out.println("eCent added: "+ eCents.toString());
+		}
+		else if(msg.equals("Data analysis completed."))
+		{
+			System.out.println(msg);
+			String e = eCents.remove(0);
+			System.out.println("eCent removed: "+ "'"+e+"'");
 		}
 
 		else System.out.println(msg);
