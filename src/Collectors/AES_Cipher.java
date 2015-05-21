@@ -27,7 +27,7 @@ public class AES_Cipher {
 		String decrypted = new String(cipher.doFinal(text.getBytes()));
 		return new  String(decrypted);
 	}
-	public static void main(String args[]) throws Exception {
+	/*public static void main(String args[]) throws Exception {
         String text = "Hello World";
         System.out.println(text);
         String encypted = encrypt(text);
@@ -36,5 +36,5 @@ public class AES_Cipher {
         System.out.println(decypted);
 
         
-	}
+	}*/
 }

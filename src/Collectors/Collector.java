@@ -1,4 +1,4 @@
-package AnalystTest;
+package Collectors;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 
-public class Analyst implements Runnable {
+public class Collector implements Runnable {
 
-	private AnalystThread client = null;
+	private CollectorThread client = null;
 	private BufferedReader in = null;
 	private BufferedReader r = null;
 	private SSLSocket directorSocket = null;
@@ -18,40 +18,16 @@ public class Analyst implements Runnable {
 	private Thread thread = null;
 	private PrintWriter directorOut = null;
 	private PrintWriter bankOut = null;
-	private String Title = "";
 	private String DATA = "";
 	private ArrayList<String> eCents = new ArrayList<String>();
 	private AES_Cipher aes = new AES_Cipher();
-	private String recs[] = new String[2];
-	private int CollectorID = 0;
 
 
 	public static void main(String args[])
 	{
 		String str = "";
-		String title = "";
 		BufferedReader sysIn = new BufferedReader(new InputStreamReader(System.in));
-		while(true)
-		{
-			System.out.print("Type analyst title [5 letter datatype]: ");
-			try 
-			{
-				str = sysIn.readLine().toLowerCase();
-				if(!str.equals("collector"))
-				{
-					title = str;
-					break;
-				}
-				else
-				{
-					System.out.println("Cannot be a collector analyst");
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-		}
+
 		while(true)
 		{
 			System.out.println();
@@ -70,7 +46,7 @@ public class Analyst implements Runnable {
 					break;
 				}
 				String strs[] = str.split(" ");
-				Analyst client = new Analyst(strs[0], Integer.parseInt(strs[1]), strs[2], Integer.parseInt(strs[3]), title);
+				Collector client = new Collector(strs[0], Integer.parseInt(strs[1]), strs[2], Integer.parseInt(strs[3]));
 				Thread thread = client.getThread();
 				while(thread.isAlive() && thread != null)
 				{
@@ -107,9 +83,8 @@ public class Analyst implements Runnable {
 		System.out.println("   Protocol = "+ss.getProtocol());
 	}
 
-	public Analyst(String directorName, int directorPort, String bankName, int bankPort, String title)
+	public Collector(String directorName, int directorPort, String bankName, int bankPort)
 	{
-		Title = title;
 		SSLSocketFactory f = 
 				(SSLSocketFactory) SSLSocketFactory.getDefault();
 		try {
@@ -140,58 +115,26 @@ public class Analyst implements Runnable {
 		{
 			stop();
 		}
-		if(msg.startsWith("eCent "))
+		else if(msg.startsWith("eCent "))
 		{
 			eCents.add(msg.substring(6, msg.length()));
 			System.out.println("eCent added: "+ eCents.toString());
 		}
-		if(msg.startsWith("ID "))
+		else if(msg.equals("Data analysis completed."))
 		{
 			System.out.println(msg);
-			System.out.println(msg.substring(3, 8));
-
-			CollectorID = Integer.parseInt(msg.substring(3, 8));
-			String rec = msg.substring(20, msg.length());
-			System.out.println("STRING FOR DECYPTION '" + rec + "'");
-			directorOut.println(".director .received "+CollectorID);
-			directorOut.flush();
-			System.out.println(".director .received "+CollectorID);
-			System.out.println("Sent received to Director");
-
-
-
-			try{
-				rec = AES_Cipher.decrypt(rec);
-			}  catch (Exception e) {
-				e.printStackTrace();
-			}
-			String recs[] = rec.split(" ",2);
-			bankOut.println(".bank .deposit "+recs[0]);	
-			bankOut.flush();
-			System.out.println("data and eCent: " + rec);
-
-		}	
-
-		if(msg.startsWith("Thank you for the deposit")){
-			System.out.println("Successfully Deposited eCent, Performed Analysis");
-			directorOut.println(".director .completed "+CollectorID);
-			directorOut.flush();
-			System.out.println("Sent completed to Director");
-
+			String e = eCents.remove(0);
+			System.out.println("eCent removed: "+ "'"+e+"'");
 		}
-
 
 		else System.out.println(msg);
 	}
 
-
-
 	@Override
 	public void run()
 	{
-		System.out.println("Welcome! Analyst "+Title);
-		System.out.println("Type '.director .analysis [collectorID] [results]' to send results back");
-		directorOut.println(".settings .analyst " + Title);
+		System.out.println("Welcome! Collector ");
+		directorOut.println(".settings .collector");
 		directorOut.flush();
 
 		while (thread != null)
@@ -221,22 +164,44 @@ public class Analyst implements Runnable {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+							System.out.println("Sending " + data + "...");
 							System.out.println(str.substring(0, 26)+ DATA);
 							directorOut.println(str.substring(0, 26)+ DATA);
 							directorOut.flush();
-
 						}
+					}
+					if(str.startsWith(".director .available")){
+						directorOut.println(str);
+						directorOut.flush();
 					}
 
 					//directorOut.println(str);
 					//	directorOut.flush();
 				}
-				if(str.startsWith(".bank "))
+				else if(str.startsWith(".bank "))
 				{
 					bankOut.println(str);
 					bankOut.flush();
 				}
+				
+				else if(str.startsWith(".help"))
+				{
+					System.out.println("You can use the following commands:");
+					System.out.println("\t.director .available");
+					System.out.println("\t.director .analysis [5 letter title] [data]");
+					System.out.println("\t.bank .withdraw");
+					System.out.println("\t.bank .deposit");
+				}
+				
+				else {
+					System.out.println("Type '.help' for help");
+				}
+				
+				
+				
 				Thread.sleep(10);
+				
+				
 			}
 			catch (IOException ioe)
 			{
@@ -255,8 +220,8 @@ public class Analyst implements Runnable {
 		bankOut = new PrintWriter(bankSocket.getOutputStream());
 		if(thread == null)
 		{
-			client = new AnalystThread(this,directorSocket);
-			client = new AnalystThread(this,bankSocket);
+			client = new CollectorThread(this,directorSocket);
+			client = new CollectorThread(this,bankSocket);
 			thread = new Thread(this);
 			thread.start();
 		}

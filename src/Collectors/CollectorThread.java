@@ -1,15 +1,16 @@
-package ClientServer;
+package Collectors;
 
 import java.io.*;
+
 import javax.net.ssl.*;
 
-public class ClientThread extends Thread
+public class CollectorThread extends Thread
 {
-	private Client client = null;
+	private Collector client = null;
 	private BufferedReader in = null;
 	private SSLSocket socket = null;
 
-	public ClientThread(Client _client, SSLSocket _socket)
+	public CollectorThread(Collector _client, SSLSocket _socket)
 	{
 		client = _client;
 		socket = _socket;

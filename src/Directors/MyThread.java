@@ -1,4 +1,4 @@
-package DirectorTest;
+package Directors;
 
 import java.io.*;
 

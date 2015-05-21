@@ -1,4 +1,4 @@
-package DirectorTest;
+package Directors;
 
 import java.awt.Dimension;
 import java.io.*;
@@ -267,7 +267,7 @@ public class Director implements Runnable {
 		}
 	}
 	public static void main(String args[]) {
-		String ksName = "bin/ServerClient/bank.jks";
+		String ksName = "bin/Directors/bank.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
 		String str = "";

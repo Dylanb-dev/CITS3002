@@ -1,15 +1,16 @@
 package Analysts;
 
 import java.io.*;
+
 import javax.net.ssl.*;
 
-public class ClientThread extends Thread
+public class AnalystThread extends Thread
 {
-	private Client client = null;
+	private Analyst client = null;
 	private BufferedReader in = null;
 	private SSLSocket socket = null;
 
-	public ClientThread(Client _client, SSLSocket _socket)
+	public AnalystThread(Analyst _client, SSLSocket _socket)
 	{
 		client = _client;
 		socket = _socket;

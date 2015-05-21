@@ -1,3 +1,4 @@
+
 package Bank;
 
 import java.io.*;
@@ -189,7 +190,7 @@ public class Bank implements Runnable {
 		}
 	}
 	public static void main(String args[]) {
-		String ksName = "bin/ServerClient/bank.jks";
+		String ksName = "src/Bank/bank.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
 		String str = "";
