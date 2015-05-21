@@ -176,13 +176,14 @@ public class Analyst implements Runnable {
 
 		if(msg.startsWith("Thank you for the deposit")){
 			System.out.println("Successfully Deposited eCent, Performing Analysis");
+			eCents.remove(0);
+			System.out.println("Deleted eCent");
 			Thread.sleep(10000); //Put thread to sleep to simulate analysis
 			System.out.println("Successfully Completed Analysis");
 			directorOut.println(".director .completed "+CollectorID);
 			directorOut.flush();
 			System.out.println("Sent Completed message to Director");
-			eCents.remove(0);
-			System.out.println("Deleted eCent");
+
 			
 		}
 
