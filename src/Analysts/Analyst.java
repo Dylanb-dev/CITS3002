@@ -90,23 +90,7 @@ public class Analyst implements Runnable {
 		System.out.println("Goodbye.");
 	}
 
-	//Print out for socket
-	private static void printSocketInfo(SSLSocket s) {
-		System.out.println("Socket class: "+s.getClass());
-		System.out.println("   Remote address = "
-				+s.getInetAddress().toString());
-		System.out.println("   Remote port = "+s.getPort());
-		System.out.println("   Local socket address = "
-				+s.getLocalSocketAddress().toString());
-		System.out.println("   Local address = "
-				+s.getLocalAddress().toString());
-		System.out.println("   Local port = "+s.getLocalPort());
-		System.out.println("   Need client authentication = "
-				+s.getNeedClientAuth());
-		SSLSession ss = s.getSession();
-		System.out.println("   Cipher suite = "+ss.getCipherSuite());
-		System.out.println("   Protocol = "+ss.getProtocol());
-	}
+
 
 	public Analyst(String directorName, int directorPort, String bankName, int bankPort, String title)
 	{
@@ -310,4 +294,18 @@ public class Analyst implements Runnable {
 		return thread;
 	}
 
+	//Print out for socket
+	private static void printSocketInfo(SSLSocket s) {
+		System.out.println("   Remote address = "
+				+s.getInetAddress().toString());
+		System.out.println("   Remote port = "+s.getPort());
+		System.out.println("   Local address = "
+				+s.getLocalAddress().toString());
+		System.out.println("   Local port = "+s.getLocalPort());
+		SSLSession ss = s.getSession();
+		System.out.println("   Cipher suite = "+ss.getCipherSuite());
+		System.out.println("   Protocol = "+ss.getProtocol());
+	}
+	
+	
 }
