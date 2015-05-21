@@ -37,14 +37,15 @@ public class Analyst implements Runnable {
 			try 
 			{
 				str = sysIn.readLine().toLowerCase();
-				if(!str.equals("collector"))
+				
+				if(str.length() == 5)
 				{
 					title = str;
 					break;
 				}
 				else
 				{
-					System.out.println("Cannot be a collector analyst");
+					System.out.println("Incorrect datatype");
 				}
 			} 
 			catch (IOException e) 
@@ -166,18 +167,23 @@ public class Analyst implements Runnable {
 				e.printStackTrace();
 			}
 			String recs[] = rec.split(" ",2);
-			bankOut.println(".bank .deposit "+recs[0]);	
+			eCents.add(recs[0]);
+			bankOut.println(".bank .deposit "+eCents.get(0));	
 			bankOut.flush();
 			System.out.println("data and eCent: " + rec);
 
 		}	
 
 		if(msg.startsWith("Thank you for the deposit")){
-			System.out.println("Successfully Deposited eCent, Performed Analysis");
+			System.out.println("Successfully Deposited eCent, Performing Analysis");
+			Thread.sleep(10000); //Put thread to sleep to simulate analysis
+			System.out.println("Successfully Completed Analysis");
 			directorOut.println(".director .completed "+CollectorID);
 			directorOut.flush();
-			System.out.println("Sent completed to Director");
-
+			System.out.println("Sent Completed message to Director");
+			eCents.remove(0);
+			System.out.println("Deleted eCent");
+			
 		}
 
 
@@ -240,7 +246,9 @@ public class Analyst implements Runnable {
 				{
 					System.out.println("You can use the following commands:");
 					System.out.println("\t.director .analysis [collectorID] [results]");
-
+					System.out.println("\t.bank .withdraw");
+					System.out.println("\t.bank .deposit");
+					System.out.println("\t. to close thread");
 					bankOut.flush();
 				}
 				

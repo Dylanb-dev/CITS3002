@@ -133,7 +133,8 @@ public class Collector implements Runnable {
 	@Override
 	public void run()
 	{
-		System.out.println("Welcome! Collector ");
+		System.out.println("Connected Succcessfully to Bank and Director");
+		System.out.println("Type '.help' for help");
 		directorOut.println(".settings .collector");
 		directorOut.flush();
 
@@ -191,6 +192,8 @@ public class Collector implements Runnable {
 					System.out.println("\t.director .analysis [5 letter title] [data]");
 					System.out.println("\t.bank .withdraw");
 					System.out.println("\t.bank .deposit");
+					System.out.println("\t. to close thread");
+
 				}
 				
 				else {
