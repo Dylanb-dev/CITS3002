@@ -190,7 +190,7 @@ public class Bank implements Runnable {
 		}
 	}
 	public static void main(String args[]) {
-		String ksName = "src/Bank/bank.jks";
+		String ksName = "bin/Bank/key.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
 		String str = "";

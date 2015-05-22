@@ -267,7 +267,7 @@ public class Director implements Runnable {
 		}
 	}
 	public static void main(String args[]) {
-		String ksName = "bin/Directors/bank.jks";
+		String ksName = "bin/Directors/key.jks";
 		char ksPass[] = "BankJKS".toCharArray();
 		char ctPass[] = "BankJKS".toCharArray();
 		String str = "";

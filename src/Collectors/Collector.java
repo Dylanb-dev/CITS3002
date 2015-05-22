@@ -7,6 +7,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+//Run with VM argument "-Djavax.net.ssl.trustStore=bin/Analysts/publicKey.jks"
+
 
 public class Collector implements Runnable {
 
