@@ -9,6 +9,19 @@ import javax.net.ssl.SSLSocketFactory;
 
 //Run with VM argument "-Djavax.net.ssl.trustStore=bin/Analysts/publicKey.jks"
 
+/**
+* CITS3002 NETWORKING PROJECT
+* 
+* 
+* @author Matt Spooner 21132843
+* @author Marcus Altmann 21121924
+* @author Isaac Nieves 21117536
+* @author Dylan Broadbridge 20769605
+*
+* Collector Class, uses multi-threading,TLS and AES to encrypt collectors data
+*
+*/
+
 
 public class Collector implements Runnable {
 

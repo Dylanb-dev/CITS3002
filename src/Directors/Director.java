@@ -1,12 +1,26 @@
 package Directors;
 
-import java.awt.Dimension;
 import java.io.*;
-import java.net.*;
 import java.security.*;
 import java.util.*;
 
 import javax.net.ssl.*;
+
+
+/**
+* CITS3002 NETWORKING PROJECT
+* 
+* 
+* @author Matt Spooner 21132843
+* @author Marcus Altmann 21121924
+* @author Isaac Nieves 21117536
+* @author Dylan Broadbridge 20769605
+*
+* Director Class, uses multi-threading and TLS.
+*
+*/
+
+
 
 
 public class Director implements Runnable {

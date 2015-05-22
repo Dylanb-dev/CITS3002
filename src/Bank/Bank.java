@@ -9,6 +9,20 @@ import java.util.*;
 import javax.net.ssl.*;
 
 
+/**
+* CITS3002 NETWORKING PROJECT
+* 
+* 
+* @author Matt Spooner 21132843
+* @author Marcus Altmann 21121924
+* @author Isaac Nieves 21117536
+* @author Dylan Broadbridge 20769605
+*
+* Bank Class, uses multithreading and TLS
+*
+*/
+
+
 public class Bank implements Runnable {
 
 	private SecureRandom random = new SecureRandom();
