@@ -1,30 +1,10 @@
 # CITS3002
 
-run bank with 
+MADE IN ECLIPSE IDE
 
-"java -cp ../ Bank.Bank"
+EACH PROGRAM RUNS IN ITS OWN PACKAGE
 
-from bin/Bank
-
-run collectors in a seperate cmd with 
-
-"java -cp ../ -Djavax.net.ssl.trustStore=publicBank.jks Collectors.Collectors"
-
-from bin/Collectors
-
-Source taken from http://www.herongyang.com/JDK/
-
-
-# SSL (aka TLS) Overview
-
-SSL/TLS is a server client connection with public key encryption
-
-The server needs a certificate and key for use
-
-The client needs a copy of the certificate to generate its own key
-
-During the handshake the client and server automatically decide on an encryption method and all communication is secure.
-
+KEYS/CERTS IN /BIN
 
 
 
